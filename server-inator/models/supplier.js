@@ -20,5 +20,5 @@ const supplierSchema = new mongoose.Schema(
   { collection: "Suppliers" }
 );
 
-const supplierModel = mongoose.model("Supplier", supplierSchema);
-module.exports = supplierModel;
+const SupplierModel = mongoose.model("Supplier", supplierSchema);
+module.exports = SupplierModel;
