@@ -17,6 +17,11 @@ mongoose
     console.log("Error occured" + err);
   });
 
+app.get("/demo", (req, res) => {
+  console.log("Get requested received  from frontend");
+  res.send("Demo");
+});
+
 const port = process.env.PORT || 1337;
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
