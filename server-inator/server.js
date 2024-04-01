@@ -17,8 +17,12 @@ mongoose
     console.log("Error occured" + err);
   });
 
+app.post("/client", (req, res) => {
+  res.send(req.body);
+});
+
 app.get("/demo", (req, res) => {
-  console.log("Get requested received  from frontend");
+  console.log("Get requested received");
   res.send("Demo");
 });
 
