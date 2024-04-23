@@ -23,7 +23,7 @@ mongoose
     console.log("Connected to DB");
   })
   .catch((err) => {
-    console.log("Error occured" + err);
+    console.log("Error occured", err);
   });
 
 app.post("/client/auth/register", async (req, res) => {
@@ -82,12 +82,12 @@ app.post("user/auth/register", async (req, res) => {
 
 app.post("/auth/login", async (req, res) => {
   let user;
-  user = customer.find((u) => u.username === username);
+  user = customer.find((u) => u.email === email);
   if (!user) {
-    user = supplier.find((u) => u.username === username);
+    user = supplier.find((u) => u.email === email);
   }
   if (!user) {
-    return res.status(401).json({ message: "Invalid username" });
+    return res.status(401).json({ message: "Invalid email" });
   }
   const isPasswordValid = await bcrypt.compare(
     req.body.password,
@@ -122,6 +122,32 @@ function verifyToken(req, res, next) {
     next();
   });
 }
+
+app.post("/service-request", verifyToken, async (req, res) => {
+  try {
+    const serviceData = {};
+    for (const key in req.body) {
+      if (req.body.hasOwnProperty(key) && req.body[key]) {
+        serviceData[key] = req.body[key];
+      }
+    }
+    serviceData.userId = req.userId;
+    const newServiceRequest = await ServiceRequestModel.create(serviceData);
+    const suppliers = await supplier.find({
+      typeOfServicesOffered: serviceData.typeOfServiceNeeded,
+    });
+    await Promise.all(
+      suppliers.map(async (supplier) => {
+        supplier.services.push(newServiceRequest._id);
+        await supplier.save();
+      })
+    );
+    res.status(201).json({ message: "Service request created successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 // app.get("/demo", (req, res) => {
 //   console.log("Get requested received");

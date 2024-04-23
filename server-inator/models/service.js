@@ -24,6 +24,10 @@ const serviceRequestSchema = new mongoose.Schema(
     paymentInformation: {
       type: String,
     },
+    userID: {
+      type: mongoose.Types.ObjectId,
+      ref: "Customer",
+    },
   },
   { collection: "ServiceRequests" }
 );

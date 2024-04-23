@@ -9,6 +9,7 @@ const customerSchema = new mongoose.Schema(
     profilePicture: String,
     homeAdress: { type: String, required: true },
     communityId: { type: String, required: true },
+    services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
     // communityId: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Community',

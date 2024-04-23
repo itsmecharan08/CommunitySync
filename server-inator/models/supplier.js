@@ -16,6 +16,7 @@ const supplierSchema = new mongoose.Schema(
     portfolioOrPreviousWorkExamples: String,
     availabilitySchedule: String,
     preferredContactMethod: { type: String, enum: ["email", "phone", "other"] },
+    services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
   },
   { collection: "Suppliers" }
 );
