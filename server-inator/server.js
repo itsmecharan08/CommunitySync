@@ -80,18 +80,21 @@ app.post("user/auth/register", async (req, res) => {
   }
 });
 
-app.post("/auth/login", (req, res) => {
+app.post("/auth/login", async (req, res) => {
   let user;
-  user = customer.find(
-    (u) => u.username === username && u.password === password
-  );
+  user = customer.find((u) => u.username === username);
   if (!user) {
-    user = supplier.find(
-      (u) => u.username === username && u.password === password
-    );
+    user = supplier.find((u) => u.username === username);
   }
   if (!user) {
-    return res.status(401).json({ message: "Invalid username or password" });
+    return res.status(401).json({ message: "Invalid username" });
+  }
+  const isPasswordValid = await bcrypt.compare(
+    req.body.password,
+    user.password
+  );
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: "Invalid password" });
   }
   const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY, {
     expiresIn: "1h",
