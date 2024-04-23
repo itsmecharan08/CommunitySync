@@ -23,7 +23,7 @@ mongoose
     console.log("Error occured" + err);
   });
 
-app.post("/client/auth", async (req, res) => {
+app.post("/client/auth/register", async (req, res) => {
   try {
     const found = await customer.findOne({ email: req.body.email });
     if (found) {
@@ -40,6 +40,33 @@ app.post("/client/auth", async (req, res) => {
       return res.json({
         status: "Success",
         message: "Customer created successfully",
+      });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return res
+      .status(500)
+      .json({ status: "Error", error: "Internal Server Error" });
+  }
+});
+
+app.post("user/auth/register", async (req, res) => {
+  try {
+    const found = await supplier.findOne({ email: req.body.email });
+    if (found) {
+      return res.json({ status: "Error", error: "Duplicate Email" });
+    } else {
+      const supplierData = {};
+      for (const key in req.body) {
+        if (req.body.hasOwnProperty(key) && req.body[key]) {
+          supplierData[key] = req.body[key];
+        }
+      }
+      supplierData[password] = await bcrypt.hash(req.body.password, 10);
+      await supplier.create(supplierData);
+      return res.json({
+        status: "Success",
+        message: "Supplier created successfully",
       });
     }
   } catch (error) {
