@@ -7,7 +7,7 @@ const customerSchema = new mongoose.Schema(
     password: { type: String, required: true },
     phoneNumber: { type: String, required: true, unique: true },
     profilePicture: String,
-    homeAdress: { type: String, required: true },
+    homeAddress: { type: String, required: true },
     communityId: { type: String, required: true },
     services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
     // communityId: {

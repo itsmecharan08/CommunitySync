@@ -38,7 +38,7 @@ app.post("/client/auth/register", async (req, res) => {
           customerData[key] = req.body[key];
         }
       }
-      customerData[password] = await bcrypt.hash(req.body.password, 10);
+      customerData.password = await bcrypt.hash(req.body.password, 10);
       await customer.create(customerData);
       return res.json({
         status: "Success",
@@ -53,7 +53,8 @@ app.post("/client/auth/register", async (req, res) => {
   }
 });
 
-app.post("user/auth/register", async (req, res) => {
+app.post("/user/auth/register", async (req, res) => {
+  console.log("nkjdbkj");
   try {
     const found = await supplier.findOne({ email: req.body.email });
     if (found) {
@@ -65,7 +66,7 @@ app.post("user/auth/register", async (req, res) => {
           supplierData[key] = req.body[key];
         }
       }
-      supplierData[password] = await bcrypt.hash(req.body.password, 10);
+      supplierData.password = await bcrypt.hash(req.body.password, 10);
       await supplier.create(supplierData);
       return res.json({
         status: "Success",
@@ -82,9 +83,9 @@ app.post("user/auth/register", async (req, res) => {
 
 app.post("/auth/login", async (req, res) => {
   let user;
-  user = customer.find((u) => u.email === email);
+  user = await customer.findOne({ email: req.body.email });
   if (!user) {
-    user = supplier.find((u) => u.email === email);
+    user = await supplier.findOne({ email: req.body.email });
   }
   if (!user) {
     return res.status(401).json({ message: "Invalid email" });
@@ -132,7 +133,7 @@ app.post("/service-request", verifyToken, async (req, res) => {
       }
     }
     serviceData.userId = req.userId;
-    const newServiceRequest = await ServiceRequestModel.create(serviceData);
+    const newServiceRequest = await service.create(serviceData);
     const suppliers = await supplier.find({
       typeOfServicesOffered: serviceData.typeOfServiceNeeded,
     });
