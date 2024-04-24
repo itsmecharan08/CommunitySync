@@ -1,0 +1,72 @@
+To test the functionality of the provided code using Postman, you'll need to create requests for:
+
+Customer registration
+Supplier registration
+Logging in (for both customer and supplier)
+Creating a service request
+Here's how you can structure these requests:
+
+1. Customer Registration:
+Method: POST
+URL: http://localhost:1337/client/auth/register
+Headers:
+Content-Type: application/json
+Body (example):
+json
+
+{
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "phoneNumber": "1234567890",
+  "homeAddress": "123 Main Street, City",
+  "communityId": "community123"
+}
+2. Supplier Registration:
+Method: POST
+URL: http://localhost:1337/user/auth/register
+Headers:
+Content-Type: application/json
+Body (example):
+json
+
+{
+  "fullName": "Jane Smith",
+  "email": "jane@example.com",
+  "password": "password123",
+  "phoneNumber": "9876543210",
+  "typeOfServicesOffered": "Cleaning",
+  "serviceArea": "City",
+  "yearsOfExperience": 5
+}
+3. Logging In:
+Method: POST
+URL: http://localhost:1337/auth/login
+Headers:
+Content-Type: application/json
+Body (example):
+json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+4. Creating a Service Request:
+Method: POST
+URL: http://localhost:1337/service-request
+Headers:
+Content-Type: application/json
+Authorization: Bearer [token] (Replace [token] with the token received upon login)
+Body (example):
+json
+
+{
+  "typeOfServiceNeeded": "Cleaning",
+  "descriptionOfServiceRequest": "Need cleaning service for my home",
+  "preferredDateAndTimeRange": "2024-04-30 10:00 AM - 12:00 PM",
+  "budget": 100,
+  "additionalNotesOrInstructions": "Please bring your own cleaning supplies",
+  "preferredContactMethod": "email",
+  "paymentInformation": "Credit Card"
+}
+Make sure to replace placeholder values like localhost:1337 with the appropriate base URL of your server and adjust the request bodies as necessary. Also, ensure that your environment variables are properly set, especially MONGODB_LOCAL_URL and SECRET_KEY

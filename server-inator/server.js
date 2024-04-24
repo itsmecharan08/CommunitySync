@@ -104,9 +104,9 @@ app.post("/auth/login", async (req, res) => {
   res.json({ token });
 });
 
-app.get("/protected", verifyToken, (req, res) => {
-  res.json({ message: "Protected route accessed successfully" });
-});
+// app.get("/protected", verifyToken, (req, res) => {
+//   res.json({ message: "Protected route accessed successfully" });
+// });
 
 function verifyToken(req, res, next) {
   const token = req.headers["authorization"];
@@ -134,6 +134,11 @@ app.post("/service-request", verifyToken, async (req, res) => {
     }
     serviceData.userId = req.userId;
     const newServiceRequest = await service.create(serviceData);
+    await customer.findByIdAndUpdate(
+      req.userId,
+      { $push: { servicesInitiated: newServiceRequest._id } },
+      { new: true }
+    );
     const suppliers = await supplier.find({
       typeOfServicesOffered: serviceData.typeOfServiceNeeded,
     });
@@ -144,6 +149,30 @@ app.post("/service-request", verifyToken, async (req, res) => {
       })
     );
     res.status(201).json({ message: "Service request created successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.get("/service-requests", async (req, res) => {
+  try {
+    const serviceRequests = await service.find();
+
+    const mappedServiceRequests = serviceRequests.map((serviceRequest) => {
+      return {
+        typeOfServiceNeeded: serviceRequest.typeOfServiceNeeded,
+        descriptionOfServiceRequest: serviceRequest.descriptionOfServiceRequest,
+        preferredDateAndTimeRange: serviceRequest.preferredDateAndTimeRange,
+        budget: serviceRequest.budget,
+        additionalNotesOrInstructions:
+          serviceRequest.additionalNotesOrInstructions,
+        preferredContactMethod: serviceRequest.preferredContactMethod,
+        paymentInformation: serviceRequest.paymentInformation,
+      };
+    });
+
+    res.status(200).json(mappedServiceRequests);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
